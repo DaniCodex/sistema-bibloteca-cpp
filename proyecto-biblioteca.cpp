@@ -22,6 +22,15 @@ struct Libro {
     int cantidadDisponible;
 };
 
+struct Prestamo {
+    string codigo;
+    string titulo;
+    string autor;
+    int cantidadDisponible;
+};
+
+vector<Prestamo> prestamos;
+
 void sistemaInicio();
 void loginUsuario();
 void registroUsuario();
@@ -221,7 +230,6 @@ void menuUsuario() {
 
         switch(opcion) {
             case 1:
-                // Lógica para ver libros disponibles (implementa la función)
                 verLibrosDisponibles(libros); 
                 break;
             case 2:
@@ -231,14 +239,14 @@ void menuUsuario() {
                 devolverLibro(); 
                 break;
             case 4:
-                verMisPrestamos(); 
+                //verMisPrestamos(codigo); 
                 break;
             case 5:
                 buscarLibros(); 
                 break;
             case 6:
                 cout << "Cerrando sesión..." << endl;
-                sistemaInicio(); // Regresar al menú de inicio
+                sistemaInicio(); 
                 break;
             default:
                 cout << "Opción no válida. Por favor, intenta de nuevo." << endl;
@@ -303,6 +311,7 @@ void prestarLibro(Libro libros[]) {
     cout << tiempoAleatorio << endl;
 
     int totalLibros = 5;
+
     
     for (int i = 0; i < totalLibros; i++) {
         cout << "Código: " << libros[i].codigo << endl;
@@ -325,6 +334,7 @@ void prestarLibro(Libro libros[]) {
                     cout << "Buscando Libro... \n";
                     Sleep(tiempoAleatorio * 1000); 
                     cout << "Libro prestado exitosamente.\n";
+                    prestamos.push_back({libros[i].codigo, libros[i].titulo, libros[i].autor, libros[i].cantidadDisponible});
                 } else {
                     cout << "Buscando Libro...";
                      Sleep(tiempoAleatorio * 1000);
@@ -346,7 +356,23 @@ void prestarLibro(Libro libros[]) {
 }
 
 void devolverLibro(){}
-void verMisPrestamos(){}
+
+//ESTO LO MODIFICARE HOY 21/11/24
+/*  
+    void verMisPrestamos(){
+    limpiarTerminal(string codigoLibro);
+    cout << "----------- Tus préstamos -----------" << endl;
+    for (const Prestamo& prestamo : prestamos) {
+        if (prestamo.codigo == codigoLibro) {
+            cout << "Código: " << prestamo.codigoLibro
+                 << ", Título: " << prestamo.tituloLibro << endl;
+        }
+    }
+    cout << "-------------------------------------" << endl;
+    pausar();
+}
+*/
+
 void buscarLibros(){} 
 
 //CODIGO PARA PROGRAMAR LA FUNCIONALIDAD DEL ADMINISTRADOR
@@ -429,6 +455,13 @@ void agregarLibros(string titulo, string autor) {
 void eliminarLibro() {
     
 }
+
+
+
+
+
+
+
 
 
 
