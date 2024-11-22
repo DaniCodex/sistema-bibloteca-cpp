@@ -1,8 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <windows.h> // Esto sirve para llamar a una funcion despues de X segundos
+#include <windows.h> 
 #include <cstdlib>
+#include <ctime>
 #include <limits>
 
 using namespace std;
@@ -14,6 +15,12 @@ string contrasenas[maxUsuarios];
 string nombres[maxUsuarios];
 int numUsuarios = 0; 
 
+struct Libro {
+    string codigo;
+    string titulo;
+    string autor;
+    int cantidadDisponible;
+};
 
 void sistemaInicio();
 void loginUsuario();
@@ -29,8 +36,8 @@ void dbRegister(int idUsuario, string contrasena, string correo);
 void registrarUsuario(int id, string correo, string contrasena, string nombres);
 void limpiarTerminal();
 void menuUsuario();
-void verLibrosDisponibles(); 
-void prestarLibro(); 
+void verLibrosDisponibles(Libro libros[]); 
+void prestarLibro(Libro libros[]); 
 void devolverLibro();
 void verMisPrestamos(); 
 void buscarLibros();  
@@ -130,7 +137,7 @@ void registroUsuario() {
     cout << " Usuario " << nombre  << " registrado correctamente" << endl;
     cout << "-------------------------------------------" << endl;
 
-    Sleep(5); //Aqui la funcion de abajo se llama deespues de 5 segundos
+    Sleep(5); 
     registrarUsuario(numero, correo, contrasena, nombre); 
     verificacionUsuario();
 }
@@ -169,13 +176,13 @@ void verificacionUsuario() {
             registroUsuario();
             break;
         case 3:
-            informacionBiblioteca(); // Implementa esta función
+            informacionBiblioteca(); 
             break;
         case 4:
-            preguntasFrecuentes(); // Implementa esta función
+            preguntasFrecuentes(); 
             break;
         case 5:
-            contactarSoporte(); // Implementa esta función
+            contactarSoporte(); 
             break;
         case 6:
             sistemaInicio();
@@ -187,7 +194,17 @@ void verificacionUsuario() {
 }
 
 void menuUsuario() {
+    limpiarTerminal();
+
     int opcion;
+
+    Libro libros[5] = {
+        {"1", "El Alquimista", "Paulo Coelho",  3},
+        {"2", "1984", "George Orwell", 5},
+        {"3", "Cien años de soledad", "Gabriel García Márquez", 2},
+        {"4", "El principito", "Antoine de Saint-Exupéry", 1},
+        {"5", "Orgullo y prejuicio", "Jane Austen", 2}
+    };
 
     do {
         cout << "----------- Bienvenido, " << endl;
@@ -205,10 +222,10 @@ void menuUsuario() {
         switch(opcion) {
             case 1:
                 // Lógica para ver libros disponibles (implementa la función)
-                verLibrosDisponibles(); 
+                verLibrosDisponibles(libros); 
                 break;
             case 2:
-                prestarLibro(); 
+                prestarLibro(libros); 
                 break;
             case 3:
                 devolverLibro(); 
@@ -228,32 +245,25 @@ void menuUsuario() {
         }
     } while (opcion != 6);
 }
-void verLibrosDisponibles() {
+void verLibrosDisponibles(Libro libros[]) {
     limpiarTerminal();
     
-    // Ejemplo de libros almacenados (puedes reemplazar esto por datos de una base de datos o archivos)
-    vector<int> codigos = {1, 2, 3, 4, 5}; 
-    vector<string> titulos = {"El Alquimista", "1984", "Cien años de soledad", "El principito", "Orgullo y prejuicio"};
-    vector<string> autores = {"Paulo Coelho", "George Orwell", "Gabriel García Márquez", "Antoine de Saint-Exupéry", "Jane Austen"};
-    vector<string> estados = {"disponible", "disponible", "prestado", "disponible", "prestado"}; // Estado de cada libro
+    // Número de libros
+    int totalLibros = 5;
 
-    cout << "----------- Libros Disponibles -----------" << endl;
-    cout << "-------------------------------------------" << endl;
-
-    // Mostrar los libros disponibles
-    for (size_t i = 0; i < codigos.size(); i++) {
-        if (estados[i] == "disponible") { // Solo mostrar libros que están disponibles
-            cout << "Código: " << codigos[i] 
-                 << ", Título: " << titulos[i] 
-                 << ", Autor: " << autores[i] 
-                 << endl;
-        }
+    // Mostrar la información de los libros
+    for (int i = 0; i < totalLibros; i++) {
+        cout << "Código: " << libros[i].codigo << endl;
+        cout << "Título: " << libros[i].titulo << endl;
+        cout << "Autor: " << libros[i].autor << endl;
+        cout << "Cantidad disponible: " << libros[i].cantidadDisponible << endl;
+        cout << "-------------------------" << endl;
     }
 
-    cout << "-------------------------------------------" << endl;
-    //cout << "Presione cualquier tecla para continuar... \n";
-    //cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Esperar entrada de usuario
-    //cin.get(); // Pausar para que el usuario vea los resultados
+
+    cout << "Presione cualquier tecla para continuar... \n";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Esperar entrada de usuario
+    cin.get(); // Pausar para que el usuario vea los resultados
 }
 
 void informacionBiblioteca() {
@@ -283,11 +293,56 @@ void contactarSoporte() {
     cin.get();
     verificacionUsuario();
 }
-void prestarLibro() {
-    verLibrosDisponibles();
+void prestarLibro(Libro libros[]) {
 
+    string solicitarCodigo;
+    string volverPrestarse;
+    srand(time(0));
+    int tiempoAleatorio = rand() % 5 + 1;
+
+    cout << tiempoAleatorio << endl;
+
+    int totalLibros = 5;
     
+    for (int i = 0; i < totalLibros; i++) {
+        cout << "Código: " << libros[i].codigo << endl;
+        cout << "Título: " << libros[i].titulo << endl;
+        cout << "Autor: " << libros[i].autor << endl;
+        cout << "Cantidad disponible: " << libros[i].cantidadDisponible << endl;
+        cout << "-------------------------" << endl;
+    }
+
+    do {
+        cout << "Ingrese el codigo del libro a prestar: "; cin >> solicitarCodigo;
+
+        bool libroEncontrado = false;
+
+        for (int i = 0; i < totalLibros; i++) {
+            if (solicitarCodigo == libros[i].codigo) {
+                libroEncontrado = true;
+                if (libros[i].cantidadDisponible > 0) {
+                    libros[i].cantidadDisponible--; 
+                    cout << "Buscando Libro... \n";
+                    Sleep(tiempoAleatorio * 1000); 
+                    cout << "Libro prestado exitosamente.\n";
+                } else {
+                    cout << "Buscando Libro...";
+                     Sleep(tiempoAleatorio * 1000);
+                    cout << "No hay copias disponibles de este libro.\n";
+                }
+                break;
+            }
+        }
+
+        if (!libroEncontrado) {
+            cout << "El libro no esta disponible o no existe. \n";
+        }
+
+        cout << "Desea adquir otro libro? (s/n) "; cin >> volverPrestarse;
+
+    } while (volverPrestarse == "s" || volverPrestarse == "S");
     
+    limpiarTerminal();
 }
 
 void devolverLibro(){}
