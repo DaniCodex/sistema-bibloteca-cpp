@@ -53,34 +53,68 @@ void buscarLibros();
 void informacionBiblioteca() ;
 void preguntasFrecuentes();
 void contactarSoporte();
+int generarNumeroAleatorio();
 
 
 //FUNCION PRINCIPAL
 int main() {
-    sistemaInicio();
+    sistemaInicio();  
 }
 
 //CODIGO GENERAL
-void sistemaInicio() {
-    int tipoUsuario;
-    cout << "------------- Sistema de Inicio ----------" << endl;
-    cout << "Tipo de Usuario: " << endl;
-    cout << "[1] Usuario " << endl;
-    cout << "[2] Administrador" << endl;
-    cout << "[3] Salir" << endl;
-    cout << "Tipo: "; cin >> tipoUsuario;
-    cout << "-------------------------------------------" << endl;
-    if (tipoUsuario == 1) {
-        verificacionUsuario();
-    } else if (tipoUsuario == 2) {
-        loginAdministrador();
-    } else if (tipoUsuario == 3) {
-        cout << "Finalizado" << endl;
-    } else {
-        cout << "Vuelva a elegir una opción válida" << endl;
-        sistemaInicio();
-    }
+int generarNumeroAleatorio() {
+    srand(time(0));
+    int tiempoAleatorio = rand() % 5 + 1;
+
+    return tiempoAleatorio;
 }
+
+void sistemaInicio() {
+    int opcion;
+    cout << "====================================================" << endl;
+    cout << "                SISTEMA DE BIBLIOTECA               " << endl;
+    cout << "====================================================" << endl;
+    cout << "  [1] Usuario (Consultar prestamos, buscar libros)" << endl;
+    cout << "  [2] Administrador (Gestionar inventario, usuarios)" << endl;
+    cout << "  [3] Salir del sistema" << endl;
+    cout << "----------------------------------------------------" << endl;
+    cout << "Ingrese su opcion: "; cin >> opcion;
+    
+    while (cin.fail() || opcion < 1 || opcion > 3) {
+        cin.clear(); 
+        cin.ignore(1000, '\n'); 
+        cout << "Opcion no valida. Intente nuevamente: ";
+        cin >> opcion;
+    }
+
+    cout << "----------------------------------------------------" << endl;
+
+    switch (opcion) {
+        case 1: 
+            cout << "Accediendo al modulo de Usuario..." << endl;
+            Sleep(generarNumeroAleatorio() * 1000);
+            verificacionUsuario();
+            break;
+
+        case 2: 
+            cout << "Accediendo al modulo de Administrador..." << endl;
+            Sleep(generarNumeroAleatorio() * 1000);
+            loginAdministrador();
+            break;
+
+        case 3: 
+            cout << "Cerrando Sesion..." << endl;
+            Sleep(generarNumeroAleatorio() * 1000);
+            break;
+
+        default: 
+            cout << "Vuelva a elegir una opcion valida." << endl;
+            sistemaInicio(); 
+            break;
+    }
+    cout << "====================================================" << endl;
+}
+
 void limpiarTerminal () {
     #ifdef _WIN32
         system("CLS"); // Para Windows
@@ -101,13 +135,13 @@ void loginUsuario() {
     string contrasena;
     char opcion;
 
-    cout << "---------INICIAR SESION---------" << endl;
-    cout << "-------------------------------------------" << endl;
-    cout << "Tipo de usuario: Usuario" << endl;
-    cout << "ID del usuario:  "; cin >> id; // Cambiado a int
-    cout << "Contraseña: "; cin >> contrasena;
+    cout << "============================================" << endl;
+    cout << "               INICIAR SESION                " << endl;
+    cout << "============================================" << endl;;
+    cout << "ID del usuario:  "; cin >> id; 
+    cout << "Contrasena: "; cin >> contrasena;
+    cout << "--------------------------------------------" << endl;
 
-    // Verificar si el usuario existe
     for (int i = 0; i < numUsuarios; i++) {
         if (ids[i] == id && contrasenas[i] == contrasena) {
             cout << "Inicio de sesión exitoso." << endl;
@@ -117,8 +151,8 @@ void loginUsuario() {
         }
     }
     
-    cout << "ID o contraseña incorrectos. ¿Desea registrarse? (s/n): "; cin >> opcion;
-
+    cout << "ID o contrasena incorrectos.Desea registrarse (s/n): "; cin >> opcion;
+;
     if (opcion == 's' || opcion == 'S') {
         registroUsuario();
     } else {
@@ -165,17 +199,24 @@ void registrarUsuario(int id, string correo, string contrasena, string nombre) {
 void verificacionUsuario() {
     limpiarTerminal();
     int menu;
-    cout << "           Menu de Usuario" << endl;
-    cout << "-------------------------------------------" << endl;
-    cout << "[1] Iniciar sesión" << endl;
-    cout << "[2] Registrarse" << endl;
-    cout << "[3] Información de la biblioteca" << endl;
-    cout << "[4] Preguntas frecuentes" << endl;
-    cout << "[5] Contactar soporte" << endl;
-    cout << "[6] Salir" << endl;
-    cout << "-------------------------------------------" << endl;
-    cout << "Alternativa: "; cin >> menu;
-    cout << "-------------------------------------------" << endl;
+    cout << "========================================" << endl;
+    cout << "          MENU DE USUARIO               " << endl;
+    cout << "========================================" << endl;
+    cout << " [1] Iniciar sesion                     " << endl;
+    cout << " [2] Registrarse                        " << endl;
+    cout << " [3] Informacion de la biblioteca       " << endl;
+    cout << " [4] Preguntas frecuentes               " << endl;
+    cout << " [5] Contactar soporte                  " << endl;
+    cout << " [6] Salir                              " << endl;
+    cout << "========================================" << endl;
+    cout << "Seleccione una opcion: "; cin >> menu;
+    cout << "========================================" << endl;
+
+    while (cin.fail() || menu < 1 || menu > 6) {
+        cin.clear(); 
+        cin.ignore(1000, '\n');
+        cout << "Opcion no valida. Por favor, intente de nuevo: "; cin >> menu;
+    }
 
     switch(menu) {
         case 1:
@@ -201,7 +242,6 @@ void verificacionUsuario() {
             verificacionUsuario();
     }
 }
-
 void menuUsuario() {
     limpiarTerminal();
 
@@ -305,10 +345,6 @@ void prestarLibro(Libro libros[]) {
 
     string solicitarCodigo;
     string volverPrestarse;
-    srand(time(0));
-    int tiempoAleatorio = rand() % 5 + 1;
-
-    cout << tiempoAleatorio << endl;
 
     int totalLibros = 5;
 
@@ -332,12 +368,12 @@ void prestarLibro(Libro libros[]) {
                 if (libros[i].cantidadDisponible > 0) {
                     libros[i].cantidadDisponible--; 
                     cout << "Buscando Libro... \n";
-                    Sleep(tiempoAleatorio * 1000); 
+                    Sleep(generarNumeroAleatorio() * 1000); 
                     cout << "Libro prestado exitosamente.\n";
                     prestamos.push_back({libros[i].codigo, libros[i].titulo, libros[i].autor, libros[i].cantidadDisponible});
                 } else {
                     cout << "Buscando Libro...";
-                     Sleep(tiempoAleatorio * 1000);
+                     Sleep(generarNumeroAleatorio() * 1000);
                     cout << "No hay copias disponibles de este libro.\n";
                 }
                 break;
