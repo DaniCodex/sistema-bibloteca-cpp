@@ -31,14 +31,6 @@ struct Prestamo {
 
 vector<Prestamo> prestamos;
 
-struct Prestamo {
-    string codigo;
-    string titulo;
-    string autor;
-    int cantidadDisponible;
-};
-
-vector<Prestamo> prestamos;
 
 void sistemaInicio();
 void loginUsuario();
@@ -248,7 +240,7 @@ void menuUsuario() {
                 devolverLibro(); 
                 break;
             case 4:
-                //verMisPrestamos(codigo); 
+                verMisPrestamos(); 
                 break;
             case 5:
                 buscarLibros(); 
