@@ -31,6 +31,15 @@ struct Prestamo {
 
 vector<Prestamo> prestamos;
 
+struct Prestamo {
+    string codigo;
+    string titulo;
+    string autor;
+    int cantidadDisponible;
+};
+
+vector<Prestamo> prestamos;
+
 void sistemaInicio();
 void loginUsuario();
 void registroUsuario();
@@ -246,7 +255,7 @@ void menuUsuario() {
                 break;
             case 6:
                 cout << "Cerrando sesión..." << endl;
-                sistemaInicio(); 
+                sistemaInicio(); // Regresar al menú de inicio
                 break;
             default:
                 cout << "Opción no válida. Por favor, intenta de nuevo." << endl;
@@ -311,7 +320,6 @@ void prestarLibro(Libro libros[]) {
     cout << tiempoAleatorio << endl;
 
     int totalLibros = 5;
-
     
     for (int i = 0; i < totalLibros; i++) {
         cout << "Código: " << libros[i].codigo << endl;
@@ -357,21 +365,22 @@ void prestarLibro(Libro libros[]) {
 
 void devolverLibro(){}
 
-//ESTO LO MODIFICARE HOY 21/11/24
-/*  
-    void verMisPrestamos(){
-    limpiarTerminal(string codigoLibro);
+
+void verMisPrestamos(){
+    limpiarTerminal();
+
     cout << "----------- Tus préstamos -----------" << endl;
-    for (const Prestamo& prestamo : prestamos) {
-        if (prestamo.codigo == codigoLibro) {
-            cout << "Código: " << prestamo.codigoLibro
-                 << ", Título: " << prestamo.tituloLibro << endl;
-        }
+
+    // Usando un bucle for normal para recorrer el vector
+    for (int i = 0; i < prestamos.size(); i++) {
+        cout << "Código: " << prestamos[i].codigo
+             << ", Título: " << prestamos[i].titulo << endl;
     }
+
     cout << "-------------------------------------" << endl;
     pausar();
 }
-*/
+
 
 void buscarLibros(){} 
 
@@ -455,7 +464,6 @@ void agregarLibros(string titulo, string autor) {
 void eliminarLibro() {
     
 }
-
 
 
 
