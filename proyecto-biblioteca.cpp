@@ -22,6 +22,14 @@ struct Libro {
     int cantidadDisponible;
 };
 
+vector<Libro> libros = {
+    {"1", "El Alquimista", "Paulo Coelho", 3},
+    {"2", "1984", "George Orwell", 5},
+    {"3", "Cien años de soledad", "Gabriel García Márquez", 2},
+    {"4", "El principito", "Antoine de Saint-Exupéry", 1},
+    {"5", "Orgullo y prejuicio", "Jane Austen", 2}
+};
+
 struct Prestamo {
     string codigo;
     string titulo;
@@ -30,6 +38,7 @@ struct Prestamo {
 };
 
 vector<Prestamo> prestamos;
+
 
 void sistemaInicio();
 void loginUsuario();
@@ -45,8 +54,8 @@ void dbRegister(int idUsuario, string contrasena, string correo);
 void registrarUsuario(int id, string correo, string contrasena, string nombres);
 void limpiarTerminal();
 void menuUsuario();
-void verLibrosDisponibles(Libro libros[]); 
-void prestarLibro(Libro libros[]); 
+void verLibrosDisponibles(const vector<Libro>& libros); 
+void prestarLibro(vector<Libro>& libros); 
 void devolverLibro();
 void verMisPrestamos(); 
 void buscarLibros();  
@@ -247,14 +256,6 @@ void menuUsuario() {
 
     int opcion;
 
-    Libro libros[5] = {
-        {"1", "El Alquimista", "Paulo Coelho",  3},
-        {"2", "1984", "George Orwell", 5},
-        {"3", "Cien años de soledad", "Gabriel García Márquez", 2},
-        {"4", "El principito", "Antoine de Saint-Exupéry", 1},
-        {"5", "Orgullo y prejuicio", "Jane Austen", 2}
-    };
-
     do {
         cout << "----------- Bienvenido, " << endl;
         cout << "-------------------------------------------" << endl;
@@ -286,14 +287,14 @@ void menuUsuario() {
                 break;
             case 6:
                 cout << "Cerrando sesión..." << endl;
-                sistemaInicio(); 
+                sistemaInicio(); // Regresar al menú de inicio
                 break;
             default:
                 cout << "Opción no válida. Por favor, intenta de nuevo." << endl;
         }
     } while (opcion != 6);
 }
-void verLibrosDisponibles(Libro libros[]) {
+void verLibrosDisponibles(const vector<Libro>& libros) {
     limpiarTerminal();
     
     // Número de libros
@@ -341,15 +342,14 @@ void contactarSoporte() {
     cin.get();
     verificacionUsuario();
 }
-void prestarLibro(Libro libros[]) {
+void prestarLibro(vector<Libro>& libros) {
 
     string solicitarCodigo;
     string volverPrestarse;
 
     int totalLibros = 5;
-
     
-    for (int i = 0; i < totalLibros; i++) {
+    for (int i = 0; i < libros.size(); i++) {
         cout << "Código: " << libros[i].codigo << endl;
         cout << "Título: " << libros[i].titulo << endl;
         cout << "Autor: " << libros[i].autor << endl;
@@ -362,7 +362,7 @@ void prestarLibro(Libro libros[]) {
 
         bool libroEncontrado = false;
 
-        for (int i = 0; i < totalLibros; i++) {
+        for (int i = 0; i < libros.size(); i++) {
             if (solicitarCodigo == libros[i].codigo) {
                 libroEncontrado = true;
                 if (libros[i].cantidadDisponible > 0) {
@@ -413,6 +413,7 @@ void verMisPrestamos(){
 void buscarLibros(){} 
 
 //CODIGO PARA PROGRAMAR LA FUNCIONALIDAD DEL ADMINISTRADOR
+
 void menuAdmin() {
     int opc;
     cout << "-------------------------------------------" << endl;
@@ -492,7 +493,6 @@ void agregarLibros(string titulo, string autor) {
 void eliminarLibro() {
     
 }
-
 
 
 
