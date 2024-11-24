@@ -23,11 +23,11 @@ struct Libro {
 };
 
 vector<Libro> libros = {
-        {"1", "El Alquimista", "Paulo Coelho", 3},
-        {"2", "1984", "George Orwell", 5},
-        {"3", "Cien años de soledad", "Gabriel García Márquez", 2},
-        {"4", "El principito", "Antoine de Saint-Exupéry", 1},
-        {"5", "Orgullo y prejuicio", "Jane Austen", 2}
+    {"1", "El Alquimista", "Paulo Coelho", 3},
+    {"2", "1984", "George Orwell", 5},
+    {"3", "Cien años de soledad", "Gabriel García Márquez", 2},
+    {"4", "El principito", "Antoine de Saint-Exupéry", 1},
+    {"5", "Orgullo y prejuicio", "Jane Austen", 2}
 };
 
 struct Prestamo {
@@ -54,8 +54,8 @@ void dbRegister(int idUsuario, string contrasena, string correo);
 void registrarUsuario(int id, string correo, string contrasena, string nombres);
 void limpiarTerminal();
 void menuUsuario();
-void verLibrosDisponibles(Libro libros[]); 
-void prestarLibro(Libro libros[]); 
+void verLibrosDisponibles(const vector<Libro>& libros); 
+void prestarLibro(vector<Libro>& libros); 
 void devolverLibro();
 void verMisPrestamos(); 
 void buscarLibros();  
@@ -347,6 +347,7 @@ void prestarLibro(vector<Libro>& libros) {
     string volverPrestarse;
 
     int totalLibros = 5;
+
     
     for (int i = 0; i < totalLibros; i++) {
         cout << "Código: " << libros[i].codigo << endl;
@@ -362,8 +363,8 @@ void prestarLibro(vector<Libro>& libros) {
 
         bool libroEncontrado = false;
 
-        for (auto& libro : libros) {
-            if (solicitarCodigo == libro.codigo) {
+        for (int i = 0; i < libros.size(); i++) {
+            if (solicitarCodigo == libros[i].codigo) {
                 libroEncontrado = true;
                 if (libro.cantidadDisponible > 0) {
                     libro.cantidadDisponible--;
@@ -414,6 +415,7 @@ void verMisPrestamos(){
 void buscarLibros(){} 
 
 //CODIGO PARA PROGRAMAR LA FUNCIONALIDAD DEL ADMINISTRADOR
+
 void menuAdmin() {
     int opc;
     cout << "-------------------------------------------" << endl;
@@ -477,7 +479,6 @@ void agregarLibros(string titulo, string autor) {
 void eliminarLibro() {
     
 }
-
 
 
 
