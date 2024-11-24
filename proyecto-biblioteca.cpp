@@ -401,8 +401,8 @@ void verMisPrestamos(){
 
     // Usando un bucle for normal para recorrer el vector
     for (int i = 0; i < prestamos.size(); i++) {
-        cout << "Código: " << prestamos[i].codigo
-             << ", Título: " << prestamos[i].titulo << endl;
+        cout << "Código: " << prestamos[i].codigo;
+        cout << ", Título: " << prestamos[i].titulo << endl;
     }
 
     cout << "-------------------------------------" << endl;
