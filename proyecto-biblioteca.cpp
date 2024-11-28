@@ -1,10 +1,10 @@
 #include <iostream>
+#include <limits>
 #include <string>
 #include <vector>
 #include <windows.h> 
 #include <cstdlib>
 #include <ctime>
-#include <limits>
 #include "termcolor.hpp"
 #include <regex> 
 
@@ -147,7 +147,7 @@ void limpiarTerminal () {
 }
 void pausar() {
     cout << "Presione cualquier tecla para continuar...\n";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignorar la entrada previa
+    cin.ignore(1000, '\n'); // Ignorar la entrada previa
     cin.get(); // Esperar que el usuario presione Enter
 }
 
@@ -200,7 +200,7 @@ void registroUsuario() {
         cout << "ID del usuario:  "; cin >> numero;
         if (cin.fail() || numero <= 0) {
             cin.clear(); 
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+            cin.ignore(1000, '\n'); 
             cout << termcolor::red << "Por favor, ingrese un ID valido (numero positivo).\n" << termcolor::reset;
         }
     } while (numero <= 0);
