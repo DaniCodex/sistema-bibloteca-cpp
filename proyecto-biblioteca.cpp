@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <limits>
+#include "termcolor.hpp"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ struct Libro {
 vector<Libro> libros = {
     {"1", "El Alquimista", "Paulo Coelho", 3},
     {"2", "1984", "George Orwell", 5},
-    {"3", "Cien años de soledad", "Gabriel García Márquez", 2},
+    {"3", "Cien años de soledad", "Gabriel Garcia Márquez", 2},
     {"4", "El principito", "Antoine de Saint-Exupéry", 1},
     {"5", "Orgullo y prejuicio", "Jane Austen", 2}
 };
@@ -34,7 +35,7 @@ struct Prestamo {
     string codigo;
     string titulo;
     string autor;
-    int cantidadDisponible;
+    int cantidadPrestada;
 };
 
 vector<Prestamo> prestamos;
@@ -46,15 +47,14 @@ void registroUsuario();
 void loginAdministrador();
 void verificacionUsuario();
 void verificacionAdmin(string id, string contrasena);
-void verLibrosAlmacenados();
-void agregarLibros(string titulo, string autor);
+void agregarLibros();
 void eliminarLibro();
 void menuAdmin();
 void dbRegister(int idUsuario, string contrasena, string correo);
 void registrarUsuario(int id, string correo, string contrasena, string nombres);
 void limpiarTerminal();
 void menuUsuario();
-void verLibrosDisponibles(const vector<Libro>& libros); 
+void verLibrosDisponibles(); 
 void prestarLibro(vector<Libro>& libros); 
 void devolverLibro();
 void verMisPrestamos(); 
@@ -63,6 +63,8 @@ void informacionBiblioteca() ;
 void preguntasFrecuentes();
 void contactarSoporte();
 int generarNumeroAleatorio();
+void mostrarMisPrestamos ();
+void leerOpcionValida(int& opcion, int min, int max);
 
 
 //FUNCION PRINCIPAL
@@ -78,10 +80,18 @@ int generarNumeroAleatorio() {
     return tiempoAleatorio;
 }
 
+void leerOpcionValida(int& opcion, int min, int max) {
+    while (cin.fail() || opcion < min || opcion > max) {
+        cin.clear(); 
+        cin.ignore(1000, '\n'); 
+        cout << "Opcion no valida. Intente nuevamente: "; cin >> opcion;
+    }
+}
+
 void sistemaInicio() {
     int opcion;
-    cout << "====================================================" << endl;
-    cout << "                SISTEMA DE BIBLIOTECA               " << endl;
+    cout <<  "====================================================" << endl;
+    cout << termcolor::red << "                SISTEMA DE BIBLIOTECA               " << termcolor::reset << endl;
     cout << "====================================================" << endl;
     cout << "  [1] Usuario (Consultar prestamos, buscar libros)" << endl;
     cout << "  [2] Administrador (Gestionar inventario, usuarios)" << endl;
@@ -89,12 +99,7 @@ void sistemaInicio() {
     cout << "----------------------------------------------------" << endl;
     cout << "Ingrese su opcion: "; cin >> opcion;
     
-    while (cin.fail() || opcion < 1 || opcion > 3) {
-        cin.clear(); 
-        cin.ignore(1000, '\n'); 
-        cout << "Opcion no valida. Intente nuevamente: ";
-        cin >> opcion;
-    }
+    leerOpcionValida(opcion, 1,3);
 
     cout << "----------------------------------------------------" << endl;
 
@@ -131,6 +136,7 @@ void limpiarTerminal () {
         system("clear"); // Para Linux y Mac
     #endif
 }
+
 void pausar() {
     cout << "Presione cualquier tecla para continuar...\n";
     cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignorar la entrada previa
@@ -153,7 +159,7 @@ void loginUsuario() {
 
     for (int i = 0; i < numUsuarios; i++) {
         if (ids[i] == id && contrasenas[i] == contrasena) {
-            cout << "Inicio de sesión exitoso." << endl;
+            cout << "Inicio de sesion exitoso." << endl;
             Sleep(2);
             menuUsuario();
             return; 
@@ -183,13 +189,13 @@ void registroUsuario() {
     cout << "ID del usuario:  "; cin >> numero; 
     cout << "Nombre del Usuario:  "; cin >> nombre; 
     cout << "Correo Electronico: "; cin >> correo;
-    cout << "Contraseña: "; cin >> contrasena;
+    cout << "Contrasena: "; cin >> contrasena;
 
     cout << "-------------------------------------------" << endl;
-    cout << " Usuario " << nombre  << " registrado correctamente" << endl;
+    cout << termcolor::green << " Usuario " << nombre  << " registrado correctamente" << termcolor::reset << endl;
     cout << "-------------------------------------------" << endl;
 
-    Sleep(5); 
+    Sleep(5000); 
     registrarUsuario(numero, correo, contrasena, nombre); 
     verificacionUsuario();
 }
@@ -202,7 +208,7 @@ void registrarUsuario(int id, string correo, string contrasena, string nombre) {
         numUsuarios++;
         cout << "Usuario registrado exitosamente.\n";
     } else {
-        cout << "Error: capacidad máxima de usuarios alcanzada.\n";
+        cout << termcolor::green << "Error: capacidad maxima de usuarios alcanzada.\n" << termcolor::reset;
     }
 }
 void verificacionUsuario() {
@@ -221,11 +227,7 @@ void verificacionUsuario() {
     cout << "Seleccione una opcion: "; cin >> menu;
     cout << "========================================" << endl;
 
-    while (cin.fail() || menu < 1 || menu > 6) {
-        cin.clear(); 
-        cin.ignore(1000, '\n');
-        cout << "Opcion no valida. Por favor, intente de nuevo: "; cin >> menu;
-    }
+    leerOpcionValida(menu, 1,6);
 
     switch(menu) {
         case 1:
@@ -247,7 +249,7 @@ void verificacionUsuario() {
             sistemaInicio();
             break;
         default:
-            cout << "Opción no válida. Por favor, intenta de nuevo." << endl;
+            cout << "Opcion no válida. Por favor, intenta de nuevo." << endl;
             verificacionUsuario();
     }
 }
@@ -262,16 +264,16 @@ void menuUsuario() {
         cout << "[1] Ver libros disponibles" << endl;
         cout << "[2] Prestar libro" << endl;
         cout << "[3] Devolver libro" << endl;
-        cout << "[4] Ver mis préstamos" << endl;
+        cout << "[4] Ver mis prestamos" << endl;
         cout << "[5] Actualizar perfil" << endl;
         cout << "[6] Cerrar sesión" << endl;
         cout << "-------------------------------------------" << endl;
-        cout << "Opción: "; cin >> opcion;
+        cout << "Opcion: "; cin >> opcion;
         cout << "-------------------------------------------" << endl;
 
         switch(opcion) {
             case 1:
-                verLibrosDisponibles(libros); 
+                verLibrosDisponibles(); 
                 break;
             case 2:
                 prestarLibro(libros); 
@@ -286,62 +288,56 @@ void menuUsuario() {
                 buscarLibros(); 
                 break;
             case 6:
-                cout << "Cerrando sesión..." << endl;
-                sistemaInicio(); // Regresar al menú de inicio
+                cout << "Cerrando sesion..." << endl;
+                sistemaInicio(); 
                 break;
             default:
-                cout << "Opción no válida. Por favor, intenta de nuevo." << endl;
+                cout << "Opcion no valida. Por favor, intenta de nuevo." << endl;
         }
     } while (opcion != 6);
 }
-void verLibrosDisponibles(const vector<Libro>& libros) {
+void verLibrosDisponibles() {
     limpiarTerminal();
-    
-    // Número de libros
-    int totalLibros = 5;
 
     // Mostrar la información de los libros
-    for (int i = 0; i < totalLibros; i++) {
-        cout << "Código: " << libros[i].codigo << endl;
-        cout << "Título: " << libros[i].titulo << endl;
+    for (int i = 0; i < libros.size(); i++) {
+        cout << "Codigo: " << libros[i].codigo << endl;
+        cout << "Titulo: " << libros[i].titulo << endl;
         cout << "Autor: " << libros[i].autor << endl;
         cout << "Cantidad disponible: " << libros[i].cantidadDisponible << endl;
         cout << "-------------------------" << endl;
     }
 
 
-    cout << "Presione cualquier tecla para continuar... \n";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Esperar entrada de usuario
-    cin.get(); // Pausar para que el usuario vea los resultados
+    pausar();
 }
 
 void informacionBiblioteca() {
-    cout << "Información de la biblioteca: \n";
+    cout << "Informacion de la biblioteca: \n";
     cout << "Horario: Lunes a Viernes de 8am a 6pm\n";
-    cout << "Ubicación: Calle Ejemplo 123\n";
-    cout << "Servicios: Préstamo de libros, salas de estudio, eventos.\n";
+    cout << "Ubicacion: Calle Ejemplo 123\n";
+    cout << "Servicios: Prestamo de libros, salas de estudio, eventos.\n";
     cout << "Presione cualquier tecla para continuar... \n";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-    verificacionUsuario();
+    pausar();
 }
+
+
 void preguntasFrecuentes() {
     cout << "Preguntas Frecuentes:\n";
-    cout << "1. ¿Cómo me registro?\n";
-    cout << "2. ¿Cuántos libros puedo prestar?\n";
-    cout << "3. ¿Qué hago si olvido mi contraseña?\n";
+    cout << "1. Como me registro?\n";
+    cout << "2. Cuantos libros puedo prestar?\n";
+    cout << "3. Que hago si olvido mi contrasena?\n";
     cout << "Presione cualquier tecla para continuar... \n";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-    verificacionUsuario();
+    pausar();
 }
+
 void contactarSoporte() {
-    cout << "Para contactar soporte, envía un correo a soporte@biblioteca.com\n";
+    cout << "Para contactar soporte, envia un correo a soporte@biblioteca.com\n";
     cout << "Presione cualquier tecla para continuar... \n";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-    verificacionUsuario();
+    pausar();
 }
+
+
 void prestarLibro(vector<Libro>& libros) {
 
     string solicitarCodigo;
@@ -350,7 +346,7 @@ void prestarLibro(vector<Libro>& libros) {
     int totalLibros = 5;
     
     for (int i = 0; i < libros.size(); i++) {
-        cout << "Código: " << libros[i].codigo << endl;
+        cout << "Codigo: " << libros[i].codigo << endl;
         cout << "Título: " << libros[i].titulo << endl;
         cout << "Autor: " << libros[i].autor << endl;
         cout << "Cantidad disponible: " << libros[i].cantidadDisponible << endl;
@@ -361,16 +357,38 @@ void prestarLibro(vector<Libro>& libros) {
         cout << "Ingrese el codigo del libro a prestar: "; cin >> solicitarCodigo;
 
         bool libroEncontrado = false;
+        int cantidadPrestada = 0;
 
         for (int i = 0; i < libros.size(); i++) {
             if (solicitarCodigo == libros[i].codigo) {
                 libroEncontrado = true;
                 if (libros[i].cantidadDisponible > 0) {
                     libros[i].cantidadDisponible--; 
+                    cantidadPrestada++;
                     cout << "Buscando Libro... \n";
                     Sleep(generarNumeroAleatorio() * 1000); 
                     cout << "Libro prestado exitosamente.\n";
-                    prestamos.push_back({libros[i].codigo, libros[i].titulo, libros[i].autor, libros[i].cantidadDisponible});
+
+                    bool prestamoExistente = false;
+
+                    for (int j = 0; j < prestamos.size(); j++) {
+                        if (prestamos[j].codigo == libros[i].codigo) {
+                            prestamos[j].cantidadPrestada++;  // Incrementar la cantidad prestada
+                            prestamoExistente = true;
+                            break;
+                        }
+                    }
+
+                    // Si no existe un préstamo previo, agregarlo
+                    if (!prestamoExistente) {
+                        prestamos.push_back({
+                            libros[i].codigo,
+                            libros[i].titulo,
+                            libros[i].autor,
+                            1 // Empezamos con 1 libro prestado
+                        });
+                    }
+
                 } else {
                     cout << "Buscando Libro...";
                      Sleep(generarNumeroAleatorio() * 1000);
@@ -391,21 +409,72 @@ void prestarLibro(vector<Libro>& libros) {
     limpiarTerminal();
 }
 
-void devolverLibro(){}
+void devolverLibro() {
+    limpiarTerminal();
+    string solicitarCodigo;
 
+    cout << "=============================================" << endl;
+    cout << "          DEVOLVER PRESTAMOS     " << endl;
+    cout << "=============================================" << endl;
+
+    mostrarMisPrestamos();
+
+    cout << "Ingrese el codigo del libro a devolver: "; cin >> solicitarCodigo;
+
+    bool libroDevuelto = false;
+
+    for (int i = 0; i < prestamos.size(); i++) {
+        if (solicitarCodigo == prestamos[i].codigo) {
+            // Buscar el libro en el vector libros para actualizar la cantidad disponible
+            for (int j = 0; j < libros.size(); j++) {
+                if (libros[j].codigo == prestamos[i].codigo) {
+                    // Incrementar la cantidad disponible
+                    libros[j].cantidadDisponible++;
+                    break; // Salir del bucle una vez encontrado el libro
+                }
+            }
+
+            // Eliminar el préstamo de la lista
+            prestamos.erase(prestamos.begin() + i);
+
+            cout << "El libro ha sido devuelto exitosamente.\n";
+            libroDevuelto = true;
+            break;  // Salir del bucle ya que solo se puede devolver un libro a la vez
+        }
+    }
+
+    if (!libroDevuelto) {
+        cout << "No se encontró un prestamo con ese codigo.\n";
+    }
+
+    pausar();  // Si deseas pausar después de la devolución, puedes mantener este código.
+}
+
+
+void mostrarMisPrestamos () {
+     if (prestamos.size() < 1) {
+        cout << "Su historial de prestamos esta vacio." << endl;
+        pausar();
+        return; 
+    }
+
+    for (int i = 0; i < prestamos.size(); i++) {
+        cout << "---------------------------------------------" << endl;
+        cout << "Codigo   : " << prestamos[i].codigo << endl;
+        cout << "Titulo   : " << prestamos[i].titulo << endl;
+        cout << "Autor    : " << prestamos[i].autor << endl;
+        cout << "Cantidad : " << prestamos[i].cantidadPrestada << endl;
+    }
+    cout << "---------------------------------------------" << endl;
+}
 
 void verMisPrestamos(){
     limpiarTerminal();
+    cout << "=============================================" << endl;
+    cout << "          LISTADO DETALLADO DE PRESTAMOS     " << endl;
+    cout << "=============================================" << endl;
 
-    cout << "----------- Tus préstamos -----------" << endl;
-
-    // Usando un bucle for normal para recorrer el vector
-    for (int i = 0; i < prestamos.size(); i++) {
-        cout << "Código: " << prestamos[i].codigo
-             << ", Título: " << prestamos[i].titulo << endl;
-    }
-
-    cout << "-------------------------------------" << endl;
+    mostrarMisPrestamos();
     pausar();
 }
 
@@ -426,19 +495,19 @@ void menuAdmin() {
 
     switch(opc) {
         case 1:
-            verLibrosAlmacenados(); 
+            verLibrosDisponibles(); 
             break;
         case 2:
-            
+            agregarLibros();
             break;
         case 3:
             
             break;
         case 4:
-            cout << "Saliendo del menú administrador." << endl;
+            cout << "Saliendo del menu administrador." << endl;
             break;
         default:
-            cout << "Opción no válida." << endl;
+            cout << "Opcion no valida." << endl;
             menuAdmin(); 
     }
 }
@@ -451,6 +520,7 @@ void loginAdministrador() {
     cout << "Contraseña: "; cin >> contrasena;
     verificacionAdmin(id, contrasena);
 }
+
 void verificacionAdmin(string id, string contrasena) {
      limpiarTerminal();
     string identificacion = "admin001";
@@ -462,34 +532,23 @@ void verificacionAdmin(string id, string contrasena) {
         loginAdministrador();
     }
 }
-void verLibrosAlmacenados() {
-    limpiarTerminal();
-    
-    // Ejemplo de libros almacenados (puedes reemplazar esto por datos de una base de datos o archivos)
-    vector<int> codigos = {1, 2, 3, 4, 5}; 
-    vector<string> titulos = {"El Alquimista", "1984", "Cien años de soledad", "El principito", "Orgullo y prejuicio"};
-    vector<string> autores = {"Paulo Coelho", "George Orwell", "Gabriel García Márquez", "Antoine de Saint-Exupéry", "Jane Austen"};
-    vector<string> estados = {"disponible", "prestado", "disponible", "disponible", "prestado"}; // Estado de cada libro
 
-    cout << "----------- Libros Almacenados -----------" << endl;
+void agregarLibros() {
+    int cod;
+    string title;
+    string author;
+    int amount;
+    cout << "----------- Sistema de agrecacion de libros ---------------- " << endl;
+    cout << "Titulo: "; cin >> title;
+    cout << "Autor: "; cin >> author;
+    cout << "Cantidad: ";cin >>amount;
+    cod = libros.size() + 1;
     cout << "-------------------------------------------" << endl;
-
-    // Mostrar todos los libros almacenados
-    for (size_t i = 0; i < codigos.size(); i++) {
-        cout << "Código: " << codigos[i] 
-             << ", Título: " << titulos[i] 
-             << ", Autor: " << autores[i] 
-             << ", Estado: " << estados[i] << endl;
-    }
-
-    cout << "-------------------------------------------" << endl;
-    cout << "Presione cualquier tecla para continuar... \n";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Esperar entrada de usuario
-    cin.get(); // Pausar para que el usuario vea los resultados
+    libros.push_back({to_string(cod),title,author,amount});
+    cout << "Libro agregado con exito" << endl;
+    menuAdmin();    
 }
-void agregarLibros(string titulo, string autor) {
-    
-}
+
 void eliminarLibro() {
     
 }
