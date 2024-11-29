@@ -169,8 +169,8 @@ void loginUsuario() {
     for (int i = 0; i < numUsuarios; i++) {
         if (ids[i] == id && contrasenas[i] == contrasena) {
             nombreUsuario = nombres[i];
-            cout << "Inicio de sesion exitoso." << endl;
-            Sleep(2);
+            cout << termcolor::green << "Inicio de sesion exitoso." << termcolor::reset << endl;
+            Sleep(generarNumeroAleatorio() * 1000);
             menuUsuario(nombreUsuario);
             return; 
         }
@@ -451,6 +451,13 @@ void devolverLibro() {
     char respuesta;
 
     do {
+
+        if (prestamos.empty()) {
+            cout << termcolor::red << "No hay libros para devolver.\n" << termcolor::reset;
+            pausar();
+            break;
+        }
+
         limpiarTerminal();
         cout << "=============================================" << endl;
         cout << "          DEVOLVER PRESTAMOS                 " << endl;
@@ -481,7 +488,13 @@ void devolverLibro() {
             cout << termcolor::red << "No se encontro un prestamo con ese codigo.\n" << termcolor::reset;
         }
 
-        cout << "Desea devolver otro libro? (s/n): "; cin >> respuesta;
+        if (!prestamos.empty()) {
+            cout << "Desea devolver otro libro? (s/n): "; cin >> respuesta;
+        } else {
+            cout << termcolor::yellow << "No quedan libros para devolver.\n" << termcolor::reset;
+            pausar();
+            break;
+        }
 
     } while (respuesta == 's' || respuesta == 'S');
     limpiarTerminal();
@@ -494,7 +507,6 @@ void mostrarMisPrestamos () {
     }
 
     for (int i = 0; i < prestamos.size(); i++) {
-        cout << "---------------------------------------------" << endl;
         cout << "Codigo   : " << prestamos[i].codigo << endl;
         cout << "Titulo   : " << prestamos[i].titulo << endl;
         cout << "Autor    : " << prestamos[i].autor << endl;
@@ -610,13 +622,17 @@ void buscarLibros() {
 
 void menuAdmin() {
     int opc;
-    cout << "-------------------------------------------" << endl;
-    cout << "Menu Administrador" << endl;
+    cout << "=============================================" << endl;
+    cout << "              MENU ADMINISTRADOR             " << endl;
+    cout << "=============================================" << endl;
     cout << "[1] Ver libros almacenados" << endl;
     cout << "[2] Agregar libro" << endl;
-    cout << "[3] Eliminar libro" << endl;
-    cout << "[4] Salir" << endl;
-    cout << "Opción: "; cin >> opc;
+    cout << "[3] Salir" << endl;
+    cout << "Opcion: "; cin >> opc;
+    
+    leerOpcionValida(opc, 1,3);
+
+    cout << "---------------------------------------------" << endl;
 
     switch(opc) {
         case 1:
@@ -626,9 +642,6 @@ void menuAdmin() {
             agregarLibros();
             break;
         case 3:
-            
-            break;
-        case 4:
             cout << "Saliendo del menu administrador." << endl;
             break;
         default:
@@ -637,38 +650,48 @@ void menuAdmin() {
     }
 }
 void loginAdministrador() {
+    limpiarTerminal();
     string contrasena;
     string id;
-    cout << "                INICIAR SESION" << endl;
+
+    cout << "============================================" << endl;
+    cout << "               INICIAR SESION                  " << endl;
+    cout << "============================================" << endl;;
     cout << "Tipo de usuario: Administrador" << endl;
+    cout << "-------------------------------------------" << endl;;
     cout << "ID: "; cin >> id;
     cout << "Contraseña: "; cin >> contrasena;
+    
     verificacionAdmin(id, contrasena);
 }
 void verificacionAdmin(string id, string contrasena) {
-     limpiarTerminal();
+    limpiarTerminal();
     string identificacion = "admin001";
     string contra = "ucsur001";
     if (identificacion == id && contra == contrasena) {
         menuAdmin();
     } else {
-        cout << "ID o contraseña inválida, vuelva a intentarlo" << endl;
+        cout << "-------------------------------------------" << endl;
+        cout << "ID o contrasena invalida, vuelva a intentarlo" << endl;
         loginAdministrador();
     }
 }
 void agregarLibros() {
+    limpiarTerminal();
     int cod;
     string title;
     string author;
     int amount;
-    cout << "----------- Sistema de agrecacion de libros ---------------- " << endl;
+    cout << "============================================" << endl;
+    cout << "               AGREGAR LIBROS                  " << endl;
+    cout << "============================================" << endl;
     cout << "Titulo: "; cin >> title;
     cout << "Autor: "; cin >> author;
     cout << "Cantidad: ";cin >>amount;
     cod = libros.size() + 1;
     cout << "-------------------------------------------" << endl;
     libros.push_back({to_string(cod),title,author,amount});
-    cout << "Libro agregado con exito" << endl;
+    cout << termcolor::red << "Libro agregado con exito" << termcolor::reset << endl;
     menuAdmin();    
 }
 
