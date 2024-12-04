@@ -1,5 +1,4 @@
-#include <iostream>
-#include <limits>
+#include <iostream> 
 #include <string>
 #include <vector>
 #include <windows.h> 
@@ -53,31 +52,30 @@ vector<Prestamo> prestamos;
 
 
 void sistemaInicio();
+int  generarNumeroAleatorio();
+void leerOpcionValida(int& opcion, int min, int max);
+void limpiarTerminal();
+void pausar();
 void loginUsuario();
 void registroUsuario();
-void loginAdministrador();
-void verificacionUsuario();
-void verificacionAdmin(string id, string contrasena);
-void agregarLibros();
-void eliminarLibro();
-void menuAdmin();
-void dbRegister(int idUsuario, string contrasena, string correo);
 void registrarUsuario(int id, string correo, string contrasena, string nombres);
-void limpiarTerminal();
+void verificacionUsuario();
 void menuUsuario(string nombreUsuario);
+void mostrarLibrosDisponibles();
 void verLibrosDisponibles(); 
-void prestarLibro(vector<Libro>& libros); 
-void devolverLibro();
-void verMisPrestamos(); 
-void buscarLibros();  
 void informacionBiblioteca() ;
 void preguntasFrecuentes();
 void contactarSoporte();
-int generarNumeroAleatorio();
+void gestionarPrestamoIndividual();
+void iniciarPrestamo(); 
+void devolverLibro();
 void mostrarMisPrestamos ();
-void leerOpcionValida(int& opcion, int min, int max);
-void mostrarLibrosDisponibles();
-
+void verMisPrestamos(); 
+void buscarLibros();  
+void menuAdmin();
+void loginAdministrador();
+void verificacionAdmin(string id, string contrasena);
+void agregarLibros();
 
 //FUNCION PRINCIPAL
 int main() {
@@ -85,27 +83,14 @@ int main() {
 }
 
 //CODIGO GENERAL
-int generarNumeroAleatorio() {
-    srand(time(0));
-    int tiempoAleatorio = rand() % 3 + 1;
-
-    return tiempoAleatorio;
-}
-void leerOpcionValida(int& opcion, int min, int max) {
-    while (cin.fail() || opcion < min || opcion > max) {
-        cin.clear(); 
-        cin.ignore(1000, '\n'); 
-        cout << "Opcion no valida. Intente nuevamente: "; cin >> opcion;
-    }
-}
 void sistemaInicio() {
     int opcion;
     cout <<  "====================================================" << endl;
     cout << termcolor::red << "                SISTEMA DE BIBLIOTECA               " << termcolor::reset << endl;
     cout << "====================================================" << endl;
-    cout << "  [1] Usuario (Consultar prestamos, buscar libros)" << endl;
-    cout << "  [2] Administrador (Gestionar inventario, usuarios)" << endl;
-    cout << "  [3] Salir del sistema" << endl;
+    cout << "  " << termcolor::on_blue << "[1]" << termcolor::reset << " Usuario (Consultar prestamos, buscar libros)" << endl;
+    cout << "  " << termcolor::on_green << "[2]" << termcolor::reset << " Administrador (Gestionar inventario, usuarios)" << endl;
+    cout << "  " << termcolor::on_magenta << "[3]" << termcolor::reset << " Salir del sistema" << endl;
     cout << "----------------------------------------------------" << endl;
     cout << "Ingrese su opcion: "; cin >> opcion;
     
@@ -115,7 +100,7 @@ void sistemaInicio() {
 
     switch (opcion) {
         case 1: 
-            cout << "Accediendo al modulo de Usuario..." << endl;
+            cout << termcolor::cyan << "Accediendo al modulo de Usuario..." << termcolor::reset << endl;
             Sleep(generarNumeroAleatorio() * 1000);
             verificacionUsuario();
             break;
@@ -138,6 +123,19 @@ void sistemaInicio() {
     }
     cout << "====================================================" << endl;
 }
+int generarNumeroAleatorio() {
+    srand(time(0));
+    int tiempoAleatorio = rand() % 3 + 1;
+
+    return tiempoAleatorio;
+}
+void leerOpcionValida(int& opcion, int min, int max) {
+    while (cin.fail() || opcion < min || opcion > max) {
+        cin.clear(); 
+        cin.ignore(1000, '\n'); 
+        cout << "Opcion no valida. Intente nuevamente: "; cin >> opcion;
+    }
+}
 void limpiarTerminal () {
     #ifdef _WIN32
         system("CLS"); // Para Windows
@@ -151,7 +149,7 @@ void pausar() {
     cin.get(); // Esperar que el usuario presione Enter
 }
 
-//CODIGO PARA PROGRAMAR LA FUNCIONALIDAD EL USUARIO
+//CODIGO PARA PROGRAMAR LA FUNCIONALIDAD DEL USUARIO
 void loginUsuario() {
     limpiarTerminal();
     int id;
@@ -160,7 +158,7 @@ void loginUsuario() {
     string nombreUsuario = "";
 
     cout << "============================================" << endl;
-    cout << "               INICIAR SESION                " << endl;
+    cout << termcolor::red << "               INICIAR SESION                " << termcolor::reset << endl;
     cout << "============================================" << endl;;
     cout << "ID del usuario:  "; cin >> id; 
     cout << "Contrasena: "; cin >> contrasena;
@@ -177,7 +175,7 @@ void loginUsuario() {
     }
     
     cout << termcolor::red << "ID o contrasena incorrectos. Desea registrarse (s/n): " << termcolor::reset; cin >> opcion;
-;
+
     if (opcion == 's' || opcion == 'S') {
         registroUsuario();
     } else {
@@ -191,7 +189,7 @@ void registroUsuario() {
     string contrasena, correo, nombre;
 
     cout << "============================================" << endl;
-    cout << "               REGISTRARSE                  " << endl;
+    cout << termcolor::red << "               REGISTRARSE                  " << termcolor::reset << endl;
     cout << "============================================" << endl;;
     cout << "Tipo de usuario: Usuario" << endl;
     cout << "-------------------------------------------" << endl;
@@ -206,7 +204,8 @@ void registroUsuario() {
     } while (numero <= 0);
 
     do {
-        cout << "Nombre del Usuario:  "; cin.ignore(); 
+        cout << "Nombre del Usuario:  "; 
+        cin.ignore(); 
         getline(cin, nombre);
         if (!regex_match(nombre, regex("^[a-zA-Z ]+$"))) {
             cout << termcolor::red << "Por favor, ingrese un nombre valido (solo letras y espacios).\n" << termcolor::reset;
@@ -256,7 +255,7 @@ void verificacionUsuario() {
     limpiarTerminal();
     int menu;
     cout << "======================================" << endl;
-    cout << "          MENU DE USUARIO               " << endl;
+    cout << termcolor::red << "          MENU DE USUARIO               " << termcolor::reset << endl;
     cout << "======================================" << endl;
     cout << " [1] Iniciar sesion                     " << endl;
     cout << " [2] Registrarse                        " << endl;
@@ -287,10 +286,11 @@ void verificacionUsuario() {
             contactarSoporte(); 
             break;
         case 6:
+            limpiarTerminal();
             sistemaInicio();
             break;
         default:
-            cout << "Opcion no válida. Por favor, intenta de nuevo." << endl;
+            cout << termcolor::red << "Opcion no válida. Por favor, intenta de nuevo." << termcolor::reset << endl;
             verificacionUsuario();
     }
 }
@@ -306,7 +306,7 @@ void menuUsuario(string nombreUsuario) {
 
     do {
         cout << "=========================================" << endl;
-        cout << "        BIENVENIDO " << termcolor::yellow << nombreUsuario << termcolor::reset << "!" << endl;
+        cout << "        BIENVENIDO " << termcolor::yellow << nombreUsuario << termcolor::reset << "!!!" << endl;
         cout << "=========================================" << endl;
         cout << "[1] Ver libros disponibles" << endl;
         cout << "[2] Prestar libro" << endl;
@@ -323,7 +323,7 @@ void menuUsuario(string nombreUsuario) {
                 verLibrosDisponibles(); 
                 break;
             case 2:
-                prestarLibro(libros); 
+                iniciarPrestamo(); 
                 break;
             case 3:
                 devolverLibro(); 
@@ -335,23 +335,25 @@ void menuUsuario(string nombreUsuario) {
                 buscarLibros(); 
                 break;
             case 6:
-                cout << "Cerrando sesion..." << endl;
+                cout << termcolor::cyan << "Cerrando sesion..." << termcolor::reset << endl;
+                Sleep(generarNumeroAleatorio() * 1000);
+                limpiarTerminal();
                 sistemaInicio(); 
                 break;
             default:
-                cout << "Opcion no valida. Por favor, intenta de nuevo." << endl;
+                cout << termcolor::red << "Opcion no valida. Por favor, intenta de nuevo." << termcolor::reset << endl;
         }
     } while (opcion != 6);
 }
 void mostrarLibrosDisponibles() {
     cout << "=============================================" << endl;
-    cout << "          LIBROS DISPONIBLES     " << endl;
+    cout << termcolor::red << "          LIBROS DISPONIBLES     " << termcolor::reset << endl;
     cout << "=============================================" << endl;
     for (int i = 0; i < libros.size(); i++) {
-        cout << "Codigo: " << libros[i].codigo << endl;
-        cout << "Titulo: " << libros[i].titulo << endl;
-        cout << "Autor: " << libros[i].autor << endl;
-        cout << "Cantidad disponible: " << libros[i].cantidadDisponible << endl;
+        cout << termcolor::green << "Codigo: " << termcolor::reset << libros[i].codigo << endl;
+        cout << termcolor::green << "Titulo: " << termcolor::reset << libros[i].titulo << endl;
+        cout << termcolor::green << "Autor: " << termcolor::reset << libros[i].autor << endl;
+        cout << termcolor::green << "Cantidad disponible: " << termcolor::reset << libros[i].cantidadDisponible << endl;
         cout << "-----------------------------------------" << endl;
     }
 }
@@ -365,7 +367,7 @@ void informacionBiblioteca() {
     limpiarTerminal();
     cout << "Informacion de la biblioteca: \n";
     cout << "Horario: Lunes a Viernes de 8am a 6pm\n";
-    cout << "Ubicacion: Calle Ejemplo 123\n";
+    cout << "Ubicacion: Antigua Panamericana Sur 19, Villa EL Salvador 15067\n";
     cout << "Servicios: Prestamo de libros, salas de estudio, eventos.\n\n";
     pausar();
     verificacionUsuario();
@@ -385,12 +387,9 @@ void contactarSoporte() {
     pausar();
     verificacionUsuario();
 }
-void prestarLibro(vector<Libro>& libros) {
-    limpiarTerminal();
+void gestionarPrestamoIndividual() {
     string solicitarCodigo;
     string volverPrestarse;
-
-    mostrarLibrosDisponibles();
 
     do {
         cout << "Ingrese el codigo del libro a prestar: "; cin >> solicitarCodigo;
@@ -443,6 +442,11 @@ void prestarLibro(vector<Libro>& libros) {
 
     } while (volverPrestarse == "s" || volverPrestarse == "S");
 
+}
+void iniciarPrestamo() {
+    limpiarTerminal();
+    mostrarLibrosDisponibles();
+    gestionarPrestamoIndividual();
     limpiarTerminal();
 }
 void devolverLibro() {
@@ -505,14 +509,16 @@ void mostrarMisPrestamos () {
         pausar();
         return; 
     }
+ 
 
     for (int i = 0; i < prestamos.size(); i++) {
-        cout << "Codigo   : " << prestamos[i].codigo << endl;
-        cout << "Titulo   : " << prestamos[i].titulo << endl;
-        cout << "Autor    : " << prestamos[i].autor << endl;
-        cout << "Cantidad : " << prestamos[i].cantidadPrestada << endl;
+        cout << termcolor::cyan << "Codigo   : " << termcolor::reset << prestamos[i].codigo << endl;
+        cout << termcolor::cyan << "Titulo   : " << termcolor::reset << prestamos[i].titulo << endl;
+        cout << termcolor::cyan << "Autor    : " << termcolor::reset << prestamos[i].autor << endl;
+        cout << termcolor::cyan << "Cantidad : " << termcolor::reset << prestamos[i].cantidadPrestada << endl;
+        cout << "---------------------------------------------" << endl;
     }
-    cout << "---------------------------------------------" << endl;
+
 }
 void verMisPrestamos(){
     limpiarTerminal();
@@ -542,7 +548,7 @@ void buscarLibros() {
 
     leerOpcionValida(opcion, 1, 3);  
 
-    cin.ignore();  
+    cin.ignore(); 
 
     switch (opcion) {
         case 1:
@@ -612,8 +618,11 @@ void buscarLibros() {
 
     if (!libroEncontrado) {
         cout << termcolor::red << "No se encontraron libros con el criterio proporcionado." << termcolor::reset << endl;
+        
+    } else {
+        gestionarPrestamoIndividual(); 
+        limpiarTerminal();
     }
-    pausar();  
 }
 
 
@@ -621,6 +630,7 @@ void buscarLibros() {
 //CODIGO PARA PROGRAMAR LA FUNCIONALIDAD DEL ADMINISTRADOR
 
 void menuAdmin() {
+    limpiarTerminal();
     int opc;
     cout << "=============================================" << endl;
     cout << "              MENU ADMINISTRADOR             " << endl;
@@ -636,13 +646,16 @@ void menuAdmin() {
 
     switch(opc) {
         case 1:
-            verLibrosDisponibles(); 
+            mostrarLibrosDisponibles();
+            pausar();
+            menuAdmin();
             break;
         case 2:
             agregarLibros();
             break;
         case 3:
             cout << "Saliendo del menu administrador." << endl;
+            Sleep(generarNumeroAleatorio() * 1000);
             break;
         default:
             cout << "Opcion no valida." << endl;
